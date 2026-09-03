@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Extrato de Contrato — Calculadora Financeira</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <style>
+    /* ===== RESET & BASE ===== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: linear-gradient(145deg, #f0f4f8 0%, #e2e8f0 100%);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      line-height: 1.5;
+      padding: 24px 16px;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ===== CONTAINER PRINCIPAL ===== */
+    .container {
+      max-width: 860px;
+      width: 100%;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 28px;
+      box-shadow: 0 20px 60px rgba(0, 20, 40, 0.12), 0 8px 24px rgba(0, 0, 0, 0.06);
+      overflow: hidden;
+      backdrop-filter: blur(2px);
+      transition: box-shadow 0.3s ease;
+    }
+
+    .container:hover {
+      box-shadow: 0 28px 72px rgba(0, 20, 40, 0.18);
+    }
+
+    /* ===== HEADER ===== */
+    .header-banner {
+      background: linear-gradient(135deg, #0b1a33 0%, #1a3a6b 60%, #1e4d8c 100%);
+      padding: 32px 28px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header-banner::after {
+      content: '';
+      position: absolute;
+      top: -60%;
+      right: -10%;
+      width: 320px;
+      height: 320px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.04) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .header-banner h1 {
+      font-size: 1.8rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .header-banner h1 i {
+      color: #fbbf24;
+      font-size: 2rem;
+    }
+
+    .header-banner p {
+      font-size: 0.95rem;
+      color: #b9d0f0;
+      margin-top: 6px;
+      font-weight: 400;
+      letter-spacing: 0.3px;
+    }
+
+    /* ===== CARD BODY ===== */
+    .card-body {
+      padding: 28px 28px 32px;
+    }
+
+    /* ===== INPUT GROUP ===== */
+    .input-group {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 20px 24px;
+      margin-bottom: 28px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .input-group:focus-within {
+      border-color: #1e4d8c;
+      box-shadow: 0 0 0 4px rgba(30, 77, 140, 0.10);
+    }
+
+    .input-group label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #1e293b;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .currency-input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .currency-prefix {
+      position: absolute;
+      left: 18px;
+      font-weight: 700;
+      font-size: 1.3rem;
+      color: #64748b;
+      pointer-events: none;
+    }
+
+    .currency-input {
+      width: 100%;
+      padding: 14px 18px 14px 52px;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #0b1a33;
+      border: 2px solid #d1d9e6;
+      border-radius: 12px;
+      background: #ffffff;
+      outline: none;
+      transition: border-color 0.25s, box-shadow 0.25s;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .currency-input:focus {
+      border-color: #1e4d8c;
+      box-shadow: 0 0 0 4px rgba(30, 77, 140, 0.12);
+    }
+
+    /* ===== TABELA ===== */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      border-radius: 16px;
+      border: 1px solid #e2e8f0;
+      margin-bottom: 28px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    }
+
+    .contract-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .contract-table thead th {
+      background: #0b1a33;
+      color: #ffffff;
+      padding: 14px 16px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      border-right: 1px solid #253d66;
+      text-align: left;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    .contract-table thead th:last-child {
+      border-right: none;
+      text-align: right;
+    }
+
+    .contract-table thead th.center {
+      text-align: center;
+    }
+
+    .contract-table tbody tr {
+      transition: background-color 0.15s ease;
+    }
+
+    .contract-table tbody tr:hover {
+      background-color: #f8fafc;
+    }
+
+    .contract-table td {
+      padding: 12px 16px;
+      border-top: 1px solid #edf2f7;
+      border-right: 1px solid #edf2f7;
+      color: #1e293b;
+      vertical-align: middle;
+    }
+
+    .contract-table td:last-child {
+      border-right: none;
+      text-align: right;
+    }
+
+    .contract-table tr.total-row {
+      font-weight: 700;
+      background-color: #f1f5f9;
+      border-top: 2px solid #cbd5e1;
+      border-bottom: 2px solid #cbd5e1;
+    }
+
+    .contract-table tr.total-row td {
+      background-color: #f1f5f9;
+    }
+
+    .contract-table tr.grand-total {
+      font-weight: 800;
+      background-color: #eef2ff;
+      border-top: 2px solid #1e4d8c;
+      border-bottom: 2px solid #1e4d8c;
+      color: #0b1a33;
+    }
+
+    .contract-table tr.grand-total td {
+      background-color: #eef2ff;
+    }
+
+    .cell-value-wrap {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .cell-prefix {
+      color: #475569;
+      font-weight: 600;
+      text-align: left;
+    }
+
+    .cell-number {
+      text-align: right;
+      flex: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* percent inputs */
+    .percent-input-wrapper {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      gap: 2px;
+    }
+
+    .percent-input {
+      width: 72px;
+      padding: 4px 6px;
+      font-size: 0.9rem;
+      text-align: right;
+      border: 1.5px solid #d1d9e6;
+      border-radius: 6px;
+      background-color: #ffffff;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      color: #0b1a33;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .percent-input:focus {
+      border-color: #1e4d8c;
+      background-color: #ffffff;
+      box-shadow: 0 0 0 3px rgba(30, 77, 140, 0.12);
+    }
+
+    .percent-sign {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #64748b;
+      margin-left: 2px;
+    }
+
+    /* ===== DIVISÃO ===== */
+    .division-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-left: 6px solid #1e4d8c;
+      border-radius: 16px;
+      padding: 20px 24px;
+      margin-bottom: 28px;
+    }
+
+    .division-box h2 {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #0b1a33;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .division-box h2 i {
+      color: #1e4d8c;
+      font-size: 1.1rem;
+    }
+
+    .division-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .division-field label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      margin-bottom: 6px;
+    }
+
+    .people-input {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      border: 2px solid #d1d9e6;
+      border-radius: 10px;
+      background: #ffffff;
+      outline: none;
+      font-family: 'Inter', sans-serif;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .people-input:focus {
+      border-color: #1e4d8c;
+      box-shadow: 0 0 0 4px rgba(30, 77, 140, 0.10);
+    }
+
+    .per-person-result {
+      background: #ffffff;
+      border: 2px solid #d1d9e6;
+      border-radius: 10px;
+      padding: 12px 16px;
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .per-person-result span {
+      display: block;
+      font-size: 0.75rem;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+
+    .per-person-result strong {
+      font-size: 1.4rem;
+      color: #0b1a33;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+    }
+
+    /* ===== AÇÕES ===== */
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .btn-copy {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #ffffff;
+      border: none;
+      border-radius: 14px;
+      padding: 16px 24px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      transition: transform 0.15s ease, box-shadow 0.25s ease;
+      box-shadow: 0 6px 16px rgba(245, 158, 11, 0.30);
+      width: 100%;
+      font-family: 'Inter', sans-serif;
+      letter-spacing: 0.01em;
+    }
+
+    .btn-copy i {
+      font-size: 1.25rem;
+    }
+
+    .btn-copy:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(245, 158, 11, 0.40);
+      background: linear-gradient(135deg, #fbbf24, #d97706);
+    }
+
+    .btn-copy:active {
+      transform: scale(0.97);
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
+    }
+
+    .feedback-toast {
+      display: none;
+      background: #10b981;
+      color: #ffffff;
+      text-align: center;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      animation: fadeInUp 0.35s ease forwards;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ===== RESPONSIVO ===== */
+    @media (max-width: 640px) {
+      body {
+        padding: 12px 8px;
+      }
+      .card-body {
+        padding: 16px;
+      }
+      .header-banner {
+        padding: 24px 16px;
+      }
+      .header-banner h1 {
+        font-size: 1.3rem;
+        flex-wrap: wrap;
+      }
+      .header-banner h1 i {
+        font-size: 1.4rem;
+      }
+      .division-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+      .contract-table {
+        font-size: 0.85rem;
+      }
+      .contract-table td,
+      .contract-table thead th {
+        padding: 10px 8px;
+      }
+      .percent-input {
+        width: 60px;
+        padding: 2px 4px;
+        font-size: 0.8rem;
+      }
+      .currency-input {
+        font-size: 1.2rem;
+        padding: 12px 14px 12px 44px;
+      }
+      .currency-prefix {
+        font-size: 1.1rem;
+        left: 14px;
+      }
+      .input-group {
+        padding: 14px 16px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        border-radius: 20px;
+      }
+      .header-banner h1 {
+        font-size: 1.1rem;
+      }
+      .contract-table thead th {
+        font-size: 0.7rem;
+        padding: 8px 6px;
+      }
+      .contract-table td {
+        padding: 8px 6px;
+      }
+      .btn-copy {
+        font-size: 0.95rem;
+        padding: 14px 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header-banner">
+      <h1>
+        <i class="fas fa-calculator"></i>
+        Extrato de Contrato
+      </h1>
+      <p>Gestão Tributária, Encargos &amp; Partilha Líquida</p>
+    </div>
+
+    <div class="card-body">
+      <!-- Entrada do Valor Bruto -->
+      <div class="input-group">
+        <label for="contractGrossInput"><i class="fas fa-hand-holding-usd" style="margin-right: 6px;"></i>Valor do Contrato (Bruto)</label>
+        <div class="currency-input-wrapper">
+          <span class="currency-prefix">R$</span>
+          <input
+            type="text"
+            id="contractGrossInput"
+            class="currency-input"
+            value="5.000,00"
+            inputmode="numeric"
+            autocomplete="off"
+            placeholder="0,00"
+          />
+        </div>
+      </div>
+
+      <!-- Tabela do Print Fiel -->
+      <div class="table-container">
+        <table class="contract-table">
+          <thead>
+            <tr>
+              <th style="width: 48%;">Item</th>
+              <th class="center" style="width: 24%;">% sobre o contrato</th>
+              <th style="width: 28%;">Contrato</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            <!-- Linhas montadas via JavaScript para suporte dinâmico -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Divisão do Valor Líquido -->
+      <div class="division-box">
+        <h2><i class="fas fa-user-friends"></i> Divisão do Valor Líquido</h2>
+        <div class="division-grid">
+          <div class="division-field">
+            <label for="peopleCount">Quantidade de pessoas</label>
+            <input
+              type="number"
+              id="peopleCount"
+              class="people-input"
+              value="1"
+              min="1"
+              step="1"
+            />
+          </div>
+          <div class="per-person-result">
+            <span>Valor líquido por pessoa</span>
+            <strong id="perPersonValue">R$ 0,00</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ações -->
+      <div class="actions">
+        <button type="button" class="btn-copy" id="btnCopy">
+          <i class="fas fa-copy"></i> Copiar Extrato Completo
+        </button>
+        <div class="feedback-toast" id="feedbackToast"><i class="fas fa-check-circle" style="margin-right: 8px;"></i>Extrato copiado!</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ============================================================
+    //  TODA A LÓGICA PERMANECE EXATAMENTE IGUAL
+    //  NENHUMA LINHA FOI ALTERADA OU REMOVIDA
+    // ============================================================
+
+    // Estrutura oficial replicando itens e percentuais padrão do print
+    const itemsConfig = [
+      { id: 'iss', name: 'ISS', defaultPct: 5.00, isFixedVal: false, group: 'imposto' },
+      { id: 'pis', name: 'PIS', defaultPct: 0.65, isFixedVal: false, group: 'imposto' },
+      { id: 'cofins', name: 'Cofins', defaultPct: 3.00, isFixedVal: false, group: 'imposto' },
+      { id: 'irpj', name: 'IRPJ', defaultPct: 4.80, isFixedVal: false, group: 'imposto' },
+      { id: 'irpj_extra', name: 'IRPJ +> 60mil', defaultPct: 1.88, isFixedVal: false, group: 'imposto' },
+      { id: 'csll', name: 'CSLL', defaultPct: 2.88, isFixedVal: false, group: 'imposto' },
+      { id: 'total_impostos', name: 'Total de impostos', isSubtotal: true, group: 'subtotal_impostos' },
+      
+      { id: 'pro_labore', name: 'Pró-labore + encargos', defaultPct: 3.60, isFixedVal: false, group: 'encargo' },
+      // Conforme o print original: Contabilidade tem piso fixo de R$ 500,00 quando 1,2% < R$ 500
+      { id: 'contabilidade', name: 'Contabilidade + obrigações', defaultPct: 1.20, isFixedVal: true, fixedValue: 500.00, group: 'encargo' },
+      { id: 'tarifas', name: 'Tarifas bancárias', defaultPct: 0.15, isFixedVal: false, group: 'encargo' },
+      { id: 'total_encargos', name: 'Total de encargos', isSubtotal: true, group: 'subtotal_encargos' },
+      
+      { id: 'total_saidas', name: 'Total geral de saídas', isGrandTotal: true },
+      { id: 'liquido_estimado', name: 'Líquido estimado', isNetTotal: true }
+    ];
+
+    // Formatação monetária e decimal pt-BR
+    function formatMoneyBR(value) {
+      return value.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function formatPercentBR(value) {
+      return value.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '%';
+    }
+
+    function parseInputToNumber(str) {
+      if (!str) return 0;
+      const clean = str.replace(/[^\d]/g, '');
+      const num = parseFloat(clean) / 100;
+      return isNaN(num) ? 0 : num;
+    }
+
+    function parsePercentInput(str) {
+      if (!str) return 0;
+      const normalized = str.replace(',', '.').replace(/[^\d.]/g, '');
+      const num = parseFloat(normalized);
+      return isNaN(num) ? 0 : num;
+    }
+
+    // Armazenamento em memória dos percentuais editáveis
+    const userPcts = {};
+    itemsConfig.forEach(item => {
+      if (!item.isSubtotal && !item.isGrandTotal && !item.isNetTotal) {
+        userPcts[item.id] = item.defaultPct;
+      }
+    });
+
+    let calculatedState = {};
+
+    function recalculateAll() {
+      const rawInput = document.getElementById('contractGrossInput').value;
+      const gross = parseInputToNumber(rawInput);
+
+      let sumImpostos = 0;
+      let sumImpostosPct = 0;
+      
+      let sumEncargos = 0;
+      let sumEncargosPct = 0;
+
+      const results = {};
+
+      // 1. Tributos
+      itemsConfig.filter(i => i.group === 'imposto').forEach(item => {
+        const pct = userPcts[item.id];
+        const val = gross * (pct / 100);
+        sumImpostos += val;
+        sumImpostosPct += pct;
+        results[item.id] = { pct, val };
+      });
+
+      results['total_impostos'] = { pct: sumImpostosPct, val: sumImpostos };
+
+      // 2. Encargos
+      itemsConfig.filter(i => i.group === 'encargo').forEach(item => {
+        const pct = userPcts[item.id];
+        let val = gross * (pct / 100);
+        
+        // Aplicação da regra do print (piso de R$ 500,00 para contabilidade quando 1,2% for menor)
+        if (item.isFixedVal && item.fixedValue) {
+          val = Math.max(val, item.fixedValue);
+        }
+
+        sumEncargos += val;
+        sumEncargosPct += pct;
+        results[item.id] = { pct, val };
+      });
+
+      // Cálculo do percentual efetivo dos encargos em relação ao bruto
+      const effectiveEncargosPct = gross > 0 ? (sumEncargos / gross) * 100 : sumEncargosPct;
+      results['total_encargos'] = { 
+        pct: gross > 0 ? effectiveEncargosPct : sumEncargosPct, 
+        val: sumEncargos 
+      };
+
+      // 3. Totais Gerais
+      const totalSaidas = sumImpostos + sumEncargos;
+      const totalSaidasPct = gross > 0 ? (totalSaidas / gross) * 100 : (sumImpostosPct + sumEncargosPct);
+      results['total_saidas'] = { pct: totalSaidasPct, val: totalSaidas };
+
+      const liquidoEstimado = gross - totalSaidas;
+      const liquidoEstimadoPct = gross > 0 ? (liquidoEstimado / gross) * 100 : (100 - totalSaidasPct);
+      results['liquido_estimado'] = { pct: liquidoEstimadoPct, val: liquidoEstimado };
+
+      calculatedState = { gross, results };
+
+      renderTable();
+      updatePerPerson();
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('tableBody');
+      const gross = calculatedState.gross || 0;
+      const r = calculatedState.results;
+
+      let html = '';
+
+      // Linha Inicial: Valor do Contrato
+      html += `
+        <tr style="font-weight: 700;">
+          <td>Valor do Contrato</td>
+          <td style="text-align: center;">100%</td>
+          <td>
+            <div class="cell-value-wrap">
+              <span class="cell-prefix">R$</span>
+              <span class="cell-number">${formatMoneyBR(gross)}</span>
+            </div>
+          </td>
+        </tr>
+      `;
+
+      itemsConfig.forEach(item => {
+        const data = r[item.id] || { pct: 0, val: 0 };
+        
+        if (item.isSubtotal) {
+          html += `
+            <tr class="total-row">
+              <td>${item.name}</td>
+              <td style="text-align: center;">${formatPercentBR(data.pct)}</td>
+              <td>
+                <div class="cell-value-wrap">
+                  <span class="cell-prefix">R$</span>
+                  <span class="cell-number">${formatMoneyBR(data.val)}</span>
+                </div>
+              </td>
+            </tr>
+          `;
+        } else if (item.isGrandTotal || item.isNetTotal) {
+          html += `
+            <tr class="grand-total">
+              <td>${item.name}</td>
+              <td style="text-align: center;">${formatPercentBR(data.pct)}</td>
+              <td>
+                <div class="cell-value-wrap">
+                  <span class="cell-prefix">R$</span>
+                  <span class="cell-number">${formatMoneyBR(data.val)}</span>
+                </div>
+              </td>
+            </tr>
+          `;
+        } else {
+          // Itens com percentuais editáveis
+          const pctVal = userPcts[item.id].toString().replace('.', ',');
+          html += `
+            <tr>
+              <td>${item.name}</td>
+              <td style="text-align: center;">
+                <div class="percent-input-wrapper">
+                  <input 
+                    type="text" 
+                    class="percent-input" 
+                    value="${pctVal}" 
+                    data-id="${item.id}"
+                    onchange="onPctChange(this)"
+                  />
+                  <span class="percent-sign">%</span>
+                </div>
+              </td>
+              <td>
+                <div class="cell-value-wrap">
+                  <span class="cell-prefix">R$</span>
+                  <span class="cell-number">${formatMoneyBR(data.val)}</span>
+                </div>
+              </td>
+            </tr>
+          `;
+        }
+      });
+
+      tbody.innerHTML = html;
+    }
+
+    function onPctChange(inputEl) {
+      const id = inputEl.getAttribute('data-id');
+      const val = parsePercentInput(inputEl.value);
+      userPcts[id] = val;
+      recalculateAll();
+    }
+
+    function updatePerPerson() {
+      const peopleInput = document.getElementById('peopleCount');
+      const perPersonEl = document.getElementById('perPersonValue');
+      const count = parseInt(peopleInput.value, 10);
+      const net = calculatedState.results ? calculatedState.results['liquido_estimado'].val : 0;
+
+      if (!count || count <= 0) {
+        perPersonEl.textContent = 'Informe as pessoas';
+        return;
+      }
+
+      const valPerPerson = net / count;
+      perPersonEl.textContent = 'R$ ' + formatMoneyBR(valPerPerson);
+    }
+
+    // Máscara de moeda em tempo real
+    const grossInput = document.getElementById('contractGrossInput');
+    grossInput.addEventListener('input', (e) => {
+      let val = e.target.value.replace(/\D/g, '');
+      if (!val) {
+        e.target.value = '0,00';
+      } else {
+        let intVal = parseInt(val, 10);
+        let formatted = (intVal / 100).toLocaleString('pt-BR', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        });
+        e.target.value = formatted;
+      }
+      recalculateAll();
+    });
+
+    document.getElementById('peopleCount').addEventListener('input', updatePerPerson);
+
+    // Cópia para a área de transferência
+    document.getElementById('btnCopy').addEventListener('click', () => {
+      const r = calculatedState.results;
+      const gross = calculatedState.gross;
+      const people = parseInt(document.getElementById('peopleCount').value, 10) || 1;
+      const perPerson = r['liquido_estimado'].val / people;
+
+      let text = `EXTRATO DO CONTRATO\n`;
+      text += `----------------------------------------\n`;
+      text += `Valor do Contrato: R$ ${formatMoneyBR(gross)} (100%)\n\n`;
+      
+      text += `IMPOSTOS:\n`;
+      itemsConfig.filter(i => i.group === 'imposto').forEach(i => {
+        text += `- ${i.name}: ${formatPercentBR(r[i.id].pct)} | R$ ${formatMoneyBR(r[i.id].val)}\n`;
+      });
+      text += `Total de impostos: ${formatPercentBR(r['total_impostos'].pct)} | R$ ${formatMoneyBR(r['total_impostos'].val)}\n\n`;
+
+      text += `ENCARGOS:\n`;
+      itemsConfig.filter(i => i.group === 'encargo').forEach(i => {
+        text += `- ${i.name}: ${formatPercentBR(r[i.id].pct)} | R$ ${formatMoneyBR(r[i.id].val)}\n`;
+      });
+      text += `Total de encargos: ${formatPercentBR(r['total_encargos'].pct)} | R$ ${formatMoneyBR(r['total_encargos'].val)}\n\n`;
+
+      text += `----------------------------------------\n`;
+      text += `Total geral de saídas: ${formatPercentBR(r['total_saidas'].pct)} | R$ ${formatMoneyBR(r['total_saidas'].val)}\n`;
+      text += `Líquido estimado: ${formatPercentBR(r['liquido_estimado'].pct)} | R$ ${formatMoneyBR(r['liquido_estimado'].val)}\n`;
+      text += `----------------------------------------\n`;
+      text += `DIVISÃO DO LÍQUIDO:\n`;
+      text += `Quantidade de pessoas: ${people}\n`;
+      text += `Valor por pessoa: R$ ${formatMoneyBR(perPerson)}\n`;
+
+      navigator.clipboard.writeText(text).then(() => {
+        const toast = document.getElementById('feedbackToast');
+        toast.style.display = 'block';
+        setTimeout(() => {
+          toast.style.display = 'none';
+        }, 2500);
+      });
+    });
+
+    // Inicialização direta
+    recalculateAll();
+  </script>
+</body>
+</html>
